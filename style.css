@@ -4,6 +4,7 @@
     padding: 20px;
     min-height: 300px;
     margin-bottom: 30px;
+    overflow: hidden;
 }
 
 .movie-year {
