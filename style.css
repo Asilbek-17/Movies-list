@@ -1,0 +1,13 @@
+.movie-wrap {
+    position: relative;
+    background-color: dodgerblue;
+    padding: 20px;
+    min-height: 300px;
+    margin-bottom: 30px;
+}
+
+.movie-year {
+    position: absolute;
+    top: calc(0% + 10px);
+    left: calc(100% - 60px);
+}

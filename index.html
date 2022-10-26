@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-Zenh87qX5JnK2Jl0vWa8Ck2rdkQ2Bzep5IDxbcnCeuOxjzrPF/et3URy9Bv1WTRi" crossorigin="anonymous">
+    <link rel="stylesheet" href="./style.css">
+    <title>Document</title>
+</head>
+<body>
+    <div class="container">
+        <ul class="movie-list row list-unstyled mt-5">
+            
+        </ul>
+    </div>
+    
+    <template class="temp">
+        <li class="movie-item col-4">
+            <div class="movie-wrap rounded-3 d-flex flex-column justify-content-between">
+                <h2 class="movie-title text-center fs-3 mt-4"></h2>
+                <span class="movie-year badge bg-black"></span>
+                <div class="category-box d-flex flex-wrap align-items-center mt-4">
+                    <p class="categorie-titul m-0 me-3">Categories :</p>
+                    <p class="categorie-text m-0"></p>
+                </div>
+                <div class="movie-box d-flex align-items-center">
+                    <p class="m-0 me-3">Film time :</p>
+                    <p class="movie-time m-0 me-1"></p>
+                    <p class="movie-min m-0"></p>
+                </div>
+            </div>
+        </li>
+    </template>
+    
+    <script src="./movies.js"></script>
+    <script src="./script.js"></script>
+</body>
+</html>
