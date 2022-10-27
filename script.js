@@ -28,71 +28,96 @@ function renderModalInfo(topilganKino){
     modalLink.href = `https://www.imdb.com/title/${topilganKino.imdb_id}`;
 }
 
+function getDuration (time){
+    
+    const hours = Math.floor(time / 60 );
+    const minuts = Math.floor(time % 60 );
+    return `${hours} hrs ${minuts} min  `
+    
+}
+
+function renderMovies(kino){
+    
+    kino.forEach(item => {
+        
+        elList.innerHTML = ""
+        
+        const elCloneMovie = document.querySelector(".temp").content.cloneNode(true);
+        
+        
+        elCloneMovie.querySelector(".movie-img").src = `https://i3.ytimg.com/vi/${item.ytid}/mqdefault.jpg `;
+        elCloneMovie.querySelector(".movie-title").textContent = item.Title;
+        elCloneMovie.querySelector(".movie-year").textContent = item.movie_year;
+        elCloneMovie.querySelector(".movie-time").textContent =  getDuration(item.runtime);
+        elCloneMovie.querySelector(".categorie-text").textContent = item.Categories.split("|").join(", ");
+        elCloneMovie.querySelector(".movie-btn").dataset.id = item.imdb_id;
+        
+        elFrag.appendChild(elCloneMovie);
+        
+    });
+    
+    elList.appendChild(elFrag)
+    
+}
+
+// Catigories
+const elSelection = document.querySelector(".js-select");
+const elOption = document.querySelector(".all-option");
+
+const genres = [];
+
+movies.forEach(itm => {
+    itm.Categories.split("|").forEach (item => {
+        if (! genres.includes(item)) {
+            genres.push(item)
+        }
+    })
+})
+
+
+const categorieFrag = document.createDocumentFragment();
+
+genres.forEach(i => {
+    const newOption = document.createElement("option");
+    
+    newOption.value = i;
+    newOption.textContent = i;
+    
+    categorieFrag.appendChild(newOption)
+})
+
+elSelection.appendChild(categorieFrag);
+
+
+
+// Form
+
 elForm.addEventListener("submit", function(evt){
     evt.preventDefault();
     
-    const newInputValue = elInput.value.trim().toUpperCase();
+    const newInputValue = elInput.value.trim();
+    const newSelectionValue = elSelection.value;
     
-    if(newInputValue != ""){
-        elList.innerHTML = null;
+    const regexTitle = new RegExp(newInputValue, "gi");
+    const regexSelect = new RegExp(newSelectionValue, "gi");
+    
+    console.log(regexSelect);
+    const searchMovie = movies.filter(item => {
+        const searchInp = String(item.Title).match(regexTitle) && item.Categories.match(regexSelect);
         
-        for (let i = 0; i < movies.length; i++) {
-            
-            const search = ""+movies[i].Title;
-            
-            if(search.toUpperCase().indexOf(newInputValue) > -1){
-                const elCloneMovie = document.querySelector(".temp").content.cloneNode(true);
-                
-                elCloneMovie.querySelector(".movie-img").src = `https://i3.ytimg.com/vi/${movies[i].ytid}/mqdefault.jpg `;
-                elCloneMovie.querySelector(".movie-title").textContent = movies[i].Title;
-                elCloneMovie.querySelector(".movie-year").textContent = movies[i].movie_year;
-                elCloneMovie.querySelector(".categorie-text").textContent = movies[i].Categories + ".";
-                elCloneMovie.querySelector(".movie-time").textContent = Math.round(movies[i].runtime / 60) + " hour :";
-                elCloneMovie.querySelector(".movie-min").textContent = Math.round(movies[i].runtime % 60) + " min";
-                
-                elFrag.appendChild(elCloneMovie);
-            }
-        }
-        elList.appendChild(elFrag);
+        return searchInp
+    });
+
+    if(newSelectionValue == "all") {
+        renderMovies(searchMovie);
+    }
+    
+    if(searchMovie.length > 0) {
+        renderMovies(searchMovie);
     } else {
-        for (const movie of movieSlice) {
-            
-            const elTemp = document.querySelector(".temp").content.cloneNode(true);
-            
-            
-            elTemp.querySelector(".movie-title").textContent = movie.Title;
-            elTemp.querySelector(".movie-img").src = `https://i3.ytimg.com/vi/${movie.ytid}/mqdefault.jpg `;
-            elTemp.querySelector(".movie-year").textContent = movie.movie_year;
-            elTemp.querySelector(".categorie-text").textContent = movie.Categories + ".";
-            elTemp.querySelector(".movie-time").textContent = Math.round(movie.runtime / 60) + " hour :";
-            elTemp.querySelector(".movie-min").textContent = Math.round(movie.runtime % 60) + " min";
-            elTemp.querySelector(".movie-btn").dataset.id = movie.imdb_id;
-            
-            elFrag.appendChild(elTemp);
-        }
-        
-        elList.appendChild(elFrag);
+        elList.innerHTML = "Movie not found !"
     }
 });
-
-
-for (const movie of movieSlice) {
-    
-    const elTemp = document.querySelector(".temp").content.cloneNode(true);
-    
-    
-    elTemp.querySelector(".movie-title").textContent = movie.Title;
-    elTemp.querySelector(".movie-img").src = `https://i3.ytimg.com/vi/${movie.ytid}/mqdefault.jpg `;
-    elTemp.querySelector(".movie-year").textContent = movie.movie_year;
-    elTemp.querySelector(".categorie-text").textContent = movie.Categories + ".";
-    elTemp.querySelector(".movie-time").textContent = Math.round(movie.runtime / 60) + " hour :";
-    elTemp.querySelector(".movie-min").textContent = Math.round(movie.runtime % 60) + " min";
-    elTemp.querySelector(".movie-btn").dataset.id = movie.imdb_id;
-    
-    elFrag.appendChild(elTemp);
-}
-
-elList.appendChild(elFrag);
 
 elList.addEventListener("click",(evt)=>{
     const targetElement = evt.target
@@ -107,3 +132,5 @@ elList.addEventListener("click",(evt)=>{
 elModal.addEventListener("hide.bs.modal", function(){
     modalIframe.src = "";
 })
+
+renderMovies(movies.slice(0, 100))
