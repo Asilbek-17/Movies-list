@@ -101,16 +101,15 @@ elForm.addEventListener("submit", function(evt){
     const regexTitle = new RegExp(newInputValue, "gi");
     const regexSelect = new RegExp(newSelectionValue, "gi");
     
-    console.log(regexSelect);
     const searchMovie = movies.filter(item => {
-        const searchInp = String(item.Title).match(regexTitle) && item.Categories.match(regexSelect);
+        const searchInp = String(item.Title).match(regexTitle) && (item.Categories.match(regexSelect) || newSelectionValue === "all");
         
         return searchInp
     });
 
-    if(newSelectionValue == "all") {
-        renderMovies(searchMovie);
-    }
+    // if(newSelectionValue == "all") {
+    //     renderMovies(searchMovie);
+    // }
     
     if(searchMovie.length > 0) {
         renderMovies(searchMovie);
