@@ -1,9 +1,12 @@
 const elList = document.querySelector(".movie-list");
 const elFrag = document.createDocumentFragment();
 const elForm = document.querySelector(".form");
-const elInput = document.querySelector(".search-inp")
+const elInput = document.querySelector(".search-inp");
+const elInpMin = document.querySelector(".search-year")
+const elInpMax = document.querySelector(".search-year2")
 
-const movieSlice = movies.slice(0, 100);
+
+const movieSlice = fullMovies.slice(0, 100);
 
 const elModal = document.querySelector(".modal");
 const modalTitle = elModal.querySelector(".modal-title");
@@ -17,15 +20,15 @@ const modalSummary = elModal.querySelector(".modal-summary");
 const modalLink = elModal.querySelector(".modal-imdb-link");
 
 function renderModalInfo(topilganKino){
-    modalTitle.textContent = topilganKino.Title;
-    modalIframe.src = `https://www.youtube-nocookie.com/embed/${topilganKino.ytid}`;
+    modalTitle.textContent = topilganKino.title;
+    modalIframe.src = topilganKino.yt_iframe;
     modalRating.textContent = topilganKino.imdb_rating;
     modalYear.textContent = topilganKino.movie_year;
     modalRuntime.textContent = Math.round(topilganKino.runtime / 60) + " hour :";
     modalRuntimeMin.textContent = Math.round(topilganKino.runtime % 60) + " min";
-    modalCategories.textContent = topilganKino.Categories.split("|").join(", ");
+    modalCategories.textContent = topilganKino.categories.join(", ");
     modalSummary.textContent = topilganKino.summary;
-    modalLink.href = `https://www.imdb.com/title/${topilganKino.imdb_id}`;
+    modalLink.href = topilganKino.imdb_id_link;
 }
 
 function getDuration (time){
@@ -45,11 +48,11 @@ function renderMovies(kino){
         const elCloneMovie = document.querySelector(".temp").content.cloneNode(true);
         
         
-        elCloneMovie.querySelector(".movie-img").src = `https://i3.ytimg.com/vi/${item.ytid}/mqdefault.jpg `;
-        elCloneMovie.querySelector(".movie-title").textContent = item.Title;
+        elCloneMovie.querySelector(".movie-img").src = item.poster_md;
+        elCloneMovie.querySelector(".movie-title").textContent = item.title;
         elCloneMovie.querySelector(".movie-year").textContent = item.movie_year;
         elCloneMovie.querySelector(".movie-time").textContent =  getDuration(item.runtime);
-        elCloneMovie.querySelector(".categorie-text").textContent = item.Categories.split("|").join(", ");
+        elCloneMovie.querySelector(".categorie-text").textContent = item.categories.join(", ");
         elCloneMovie.querySelector(".movie-btn").dataset.id = item.imdb_id;
         
         elFrag.appendChild(elCloneMovie);
@@ -66,14 +69,13 @@ const elOption = document.querySelector(".all-option");
 
 const genres = [];
 
-movies.forEach(itm => {
-    itm.Categories.split("|").forEach (item => {
+fullMovies.forEach(itm => {
+    itm.categories.forEach (item => {
         if (! genres.includes(item)) {
             genres.push(item)
         }
     })
 })
-
 
 const categorieFrag = document.createDocumentFragment();
 
@@ -97,16 +99,19 @@ elForm.addEventListener("submit", function(evt){
     
     const newInputValue = elInput.value.trim();
     const newSelectionValue = elSelection.value;
+    const newMinInp = Number(elInpMin.value.trim());
+    const newMaxInp = Number(elInpMax.value.trim());
+
     
     const regexTitle = new RegExp(newInputValue, "gi");
     const regexSelect = new RegExp(newSelectionValue, "gi");
     
-    const searchMovie = movies.filter(item => {
-        const searchInp = String(item.Title).match(regexTitle) && (item.Categories.match(regexSelect) || newSelectionValue === "all");
+    const searchMovie = fullMovies.filter(item => {
+        const searchInp = String(item.title).match(regexTitle) && (String(item.categories).match(regexSelect) || newSelectionValue === "all") && ((newMinInp <= item.movie_year && newMaxInp >= item.movie_year) || (newMinInp == "" && newMaxInp >= item.movie_year) || (newMinInp <= item.movie_year && newMaxInp == ""));
         
         return searchInp
     });
-
+    
     // if(newSelectionValue == "all") {
     //     renderMovies(searchMovie);
     // }
@@ -123,7 +128,7 @@ elList.addEventListener("click",(evt)=>{
     if(targetElement.matches(".movie-btn")){
         // buttonning id attributining qiymatini olib, o'sha qiymatga ega bo'lgan kinoni topish
         const btnId = targetElement.dataset.id
-        const foundMovie = movies.find(kino => kino.imdb_id === btnId);
+        const foundMovie = fullMovies.find(kino => kino.imdb_id === btnId);
         renderModalInfo(foundMovie);
     }
 });
@@ -132,4 +137,4 @@ elModal.addEventListener("hide.bs.modal", function(){
     modalIframe.src = "";
 })
 
-renderMovies(movies.slice(0, 100))
+renderMovies(fullMovies.slice(0, 100))
