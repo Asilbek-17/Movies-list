@@ -11,15 +11,22 @@
 <body>
   <div class="container">
     <form class="form d-flex align-items-center mt-5" method="post" autocomplete="off">
-      <div class="d-flex align-items-center w-50">
-        <input class="search-inp w-50 me-3 p-1" type="search" placeholder="Search Movie" minlength="1" required>
-        <button class=" search-btn btn btn-outline-success">Search</button>
-      </div>
+      <input class="search-inp w-25 me-3 p-1" type="search" placeholder="Search Movie">
       <select class="form-select w-25 js-select"  aria-label="Default select example">
         <option class="all-option" value="all" selected>All</option>
       </select>
       <input class="search-year w-25 ms-3 me-3 p-1" type="search" placeholder="Search Min Year" min="2000" max="2018">
       <input class="search-year2 w-25 me-3 p-1" type="search" placeholder="Search Max Year" min="2000" max="2018">
+      <select class="form-select w-25 js-sort me-3"  aria-label="Default select example">
+        <option class="sort-option" value="all" selected>Sort Movies</option>
+        <option class="sort-Az" value="Az">A-Z</option>
+        <option class="sort-option" value="Za">Z-A</option>
+        <option class="sort-option" value="No">New year - Old year</option>
+        <option class="sort-option" value="On">Old year - New year</option>
+        <option class="sort-option" value="Tz">Rating : 10 - 0</option>
+        <option class="sort-option" value="Zt">Rating : 0 - 10</option>
+      </select>
+      <button class=" search-btn btn btn-outline-success">Search</button>
     </form>
     <ul class="movie-list row list-unstyled mt-5">
       <img class="my-auto mx-auto" src="./loader.svg" width="500" height="500" alt="Loading">
@@ -40,7 +47,12 @@
           <p class="m-0 me-3">Film time :</p>
           <p class="movie-time m-0 me-1"></p>
           <p class="movie-min m-0"></p>
+          <div class="d-flex align-items-center ms-3">
+            <p class="m-0 me-3">Rating : </p>
+            <p class="rating m-0"></p>
+          </div>
         </div>
+        
         <button class="movie-btn btn btn-outline-light mt-auto" type="button" data-bs-toggle="modal" data-bs-target="#exampleModal" data-id="tt7026230">More info</button>
       </div>
     </li>

@@ -5,9 +5,10 @@ const elInput = document.querySelector(".search-inp");
 const elInpMin = document.querySelector(".search-year")
 const elInpMax = document.querySelector(".search-year2")
 
+// SORT
+const elSort = document.querySelector(".js-sort");
 
-const movieSlice = fullMovies.slice(0, 100);
-
+// MODAL
 const elModal = document.querySelector(".modal");
 const modalTitle = elModal.querySelector(".modal-title");
 const modalIframe = elModal.querySelector(".modal-iframe");
@@ -51,16 +52,54 @@ function renderMovies(kino){
         elCloneMovie.querySelector(".movie-img").src = item.poster_md;
         elCloneMovie.querySelector(".movie-title").textContent = item.title;
         elCloneMovie.querySelector(".movie-year").textContent = item.movie_year;
-        elCloneMovie.querySelector(".movie-time").textContent =  getDuration(item.runtime);
+        elCloneMovie.querySelector(".movie-time").textContent =  getDuration(item.runtime) + ";";
         elCloneMovie.querySelector(".categorie-text").textContent = item.categories.join(", ");
         elCloneMovie.querySelector(".movie-btn").dataset.id = item.imdb_id;
+        elCloneMovie.querySelector(".rating").textContent = item.imdb_rating;
         
         elFrag.appendChild(elCloneMovie);
         
     });
     
-    elList.appendChild(elFrag)
+    elList.appendChild(elFrag);
+}
+
+function sortMovies(movie, sortTypes) {
+    if(sortTypes === "Az") {
+        movie.sort((a , b) => {
+            return String(a.title).charCodeAt(0) - String(b.title).charCodeAt(0) 
+        });
+    }
     
+    if(sortTypes === "Za") {
+        movie.sort((a , b) => {
+            return String(b.title).charCodeAt(0) - String(a.title).charCodeAt(0) 
+        });
+    }
+    
+    if(sortTypes === "No") {
+        movie.sort((a , b) => {
+            return b.movie_year - a.movie_year
+        });
+    }
+    
+    if(sortTypes === "On") {
+        movie.sort((a , b) => {
+            return a.movie_year - b.movie_year
+        });
+    }
+    
+    if(sortTypes === "Tz") {
+        movie.sort((a , b) => {
+            return b.imdb_rating - a.imdb_rating
+        });
+    }
+    
+    if(sortTypes === "Zt") {
+        movie.sort((a , b) => {
+            return a.movie_year - b.movie_year
+        });
+    }
 }
 
 // Catigories
@@ -90,8 +129,6 @@ genres.forEach(i => {
 
 elSelection.appendChild(categorieFrag);
 
-
-
 // Form
 
 elForm.addEventListener("submit", function(evt){
@@ -101,7 +138,7 @@ elForm.addEventListener("submit", function(evt){
     const newSelectionValue = elSelection.value;
     const newMinInp = Number(elInpMin.value.trim());
     const newMaxInp = Number(elInpMax.value.trim());
-
+    
     
     const regexTitle = new RegExp(newInputValue, "gi");
     const regexSelect = new RegExp(newSelectionValue, "gi");
@@ -112,11 +149,8 @@ elForm.addEventListener("submit", function(evt){
         return searchInp
     });
     
-    // if(newSelectionValue == "all") {
-    //     renderMovies(searchMovie);
-    // }
-    
     if(searchMovie.length > 0) {
+        sortMovies(searchMovie, elSort.value);
         renderMovies(searchMovie);
     } else {
         elList.innerHTML = "Movie not found !"
