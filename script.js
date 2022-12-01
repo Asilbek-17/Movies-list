@@ -1,3 +1,4 @@
+AOS.init();
 const elList = document.querySelector(".movie-list");
 const elFrag = document.createDocumentFragment();
 const elForm = document.querySelector(".form");
@@ -30,26 +31,23 @@ function renderModalInfo(topilganKino){
     modalCategories.textContent = topilganKino.categories.join(", ");
     modalSummary.textContent = topilganKino.summary;
     modalLink.href = topilganKino.imdb_id_link;
-}
+};
 
 function getDuration (time){
-    
     const hours = Math.floor(time / 60 );
     const minuts = Math.floor(time % 60 );
     return `${hours} hrs ${minuts} min  `
-    
-}
+};
 
 function renderMovies(kino){
-    
     kino.forEach(item => {
         
         elList.innerHTML = ""
         
         const elCloneMovie = document.querySelector(".temp").content.cloneNode(true);
         
-        
         elCloneMovie.querySelector(".movie-img").src = item.poster_md;
+        
         elCloneMovie.querySelector(".movie-title").textContent = item.title;
         elCloneMovie.querySelector(".movie-year").textContent = item.movie_year;
         elCloneMovie.querySelector(".movie-time").textContent =  getDuration(item.runtime) + ";";
@@ -58,49 +56,47 @@ function renderMovies(kino){
         elCloneMovie.querySelector(".rating").textContent = item.imdb_rating;
         
         elFrag.appendChild(elCloneMovie);
-        
     });
-    
     elList.appendChild(elFrag);
-}
+};
 
 function sortMovies(movie, sortTypes) {
     if(sortTypes === "Az") {
         movie.sort((a , b) => {
-            return String(a.title).charCodeAt(0) - String(b.title).charCodeAt(0) 
+            return String(a.title).toLowerCase().charCodeAt(0) - String(b.title).toLowerCase().charCodeAt(0) 
         });
-    }
+    };
     
     if(sortTypes === "Za") {
         movie.sort((a , b) => {
-            return String(b.title).charCodeAt(0) - String(a.title).charCodeAt(0) 
+            return String(b.title).toLowerCase().charCodeAt(0) - String(a.title).toLowerCase().charCodeAt(0) 
         });
-    }
+    };
     
     if(sortTypes === "No") {
         movie.sort((a , b) => {
             return b.movie_year - a.movie_year
         });
-    }
+    };
     
     if(sortTypes === "On") {
         movie.sort((a , b) => {
             return a.movie_year - b.movie_year
         });
-    }
+    };
     
     if(sortTypes === "Tz") {
         movie.sort((a , b) => {
             return b.imdb_rating - a.imdb_rating
         });
-    }
+    };
     
     if(sortTypes === "Zt") {
         movie.sort((a , b) => {
-            return a.movie_year - b.movie_year
+            return a.imdb_rating - b.imdb_rating
         });
-    }
-}
+    };
+};
 
 // Catigories
 const elSelection = document.querySelector(".js-select");
@@ -142,9 +138,8 @@ elForm.addEventListener("submit", function(evt){
     
     const regexTitle = new RegExp(newInputValue, "gi");
     const regexSelect = new RegExp(newSelectionValue, "gi");
-    
     const searchMovie = fullMovies.filter(item => {
-        const searchInp = String(item.title).match(regexTitle) && (String(item.categories).match(regexSelect) || newSelectionValue === "all") && ((newMinInp <= item.movie_year && newMaxInp >= item.movie_year) || (newMinInp == "" && newMaxInp >= item.movie_year) || (newMinInp <= item.movie_year && newMaxInp == ""));
+        const searchInp = String(item.title).match(regexTitle) && new Set(item.categories)|| newSelectionValue === "all" && ((newMinInp <= item.movie_year && newMaxInp >= item.movie_year) || (newMinInp == "" && newMaxInp >= item.movie_year) || (newMinInp <= item.movie_year && newMaxInp == ""));
         
         return searchInp
     });
@@ -157,7 +152,7 @@ elForm.addEventListener("submit", function(evt){
     }
 });
 
-elList.addEventListener("click",(evt)=>{
+elList.addEventListener("click",(evt) => {
     const targetElement = evt.target
     if(targetElement.matches(".movie-btn")){
         // buttonning id attributining qiymatini olib, o'sha qiymatga ega bo'lgan kinoni topish
